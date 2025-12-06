@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (Add your specific secret files here)
+secrets.py
+wifi.dat
