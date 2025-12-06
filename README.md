@@ -1,6 +1,6 @@
 # Colors Machine
 
-This repository consolidates the software for the Colors Machine project, which automates military bugle calls (First Call, Colors, Retreat, Taps) using two ESP32 microcontrollers, a ds321 time module, and IC2 audio board.
+This repository consolidates the software for the Colors Machine project, which automates military bugle calls (First Call, Colors, Retreat, Taps) using two ESP32 microcontrollers, a ds321 time module, and I2S audio board.
 ## Directory Structure
 
 -   `controller/`: Source code for the MicroPython-based ESP32-S3 controller. This device handles timekeeping (NTP + DS3231), sunset calculations, and triggers the audio player via UART.
