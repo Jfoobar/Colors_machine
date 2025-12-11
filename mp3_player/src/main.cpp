@@ -44,6 +44,7 @@
 #define BUTTON_PIN_3  23 
 #define BUTTON_PIN_4  13
 #define BUTTON_PIN_5  33
+#define BUTTON_PIN_6  35
 
 #define LONG_PRESS_MS 1000
 #define DEBOUNCE_MS    50
@@ -92,7 +93,8 @@ Button buttons[] = {
   {BUTTON_PIN_3, "/first_call.mp3", nullptr, 0, false, 0, HIGH, HIGH, 0}, // Button 3 plays first_call directly
   {BUTTON_PIN_4, nullptr, sequence_btn4, SEQUENCE_BTN4_LEN, true, 0, HIGH, HIGH, 0},  // Button 4 starts sequence 2
   //Button 5 stops playback on any press
-  {BUTTON_PIN_5, nullptr, nullptr, 0, false, 0, HIGH, HIGH, 0}
+  {BUTTON_PIN_5, nullptr, nullptr, 0, false, 0, HIGH, HIGH, 0},
+  {BUTTON_PIN_6, nullptr, nullptr, 0, false, 0, HIGH, HIGH, 0}
 };
 const int NUM_BUTTONS = sizeof(buttons) / sizeof(buttons[0]);
 
@@ -183,6 +185,7 @@ void setup() {
     pinMode(BUTTON_PIN_3, INPUT_PULLUP);
     pinMode(BUTTON_PIN_4, INPUT_PULLUP);
     pinMode(BUTTON_PIN_5, INPUT_PULLUP);
+    pinMode(BUTTON_PIN_6, INPUT_PULLUP);
 
   //Serial.println("ESP32 UART Receiver (C++)");
   Serial.println("-------------------------");
@@ -225,8 +228,11 @@ void loop()
                 audio.stopSong();
                 isPlayingASequence = false; // Ensure sequence mode is off
                 currentActiveSequence = nullptr; // Clear sequence state
+              } else if btn.pin == BUTTON_PIN_6 {
+                Serial.println("Button 6 pressed, toggle auto sunset");
+                Serial2.println("Auto_Sunset_Toggle");
               } else {
-                // Short press: play its associated MP3 or start its sequence
+                //Short press: play its associated MP3 or start its sequence
                 startAudioPlayback(btn);
                 switch (btn.pin)  // switch expression
                 {

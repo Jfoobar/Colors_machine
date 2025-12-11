@@ -41,9 +41,8 @@ uart2 = UART(2, baudrate=baud_rate, tx=Pin(41), rx=Pin(38)) #connect TX41 to RX2
 def main():
     # Setup Manual AP Button (Pin 40, Pull Up)
     ap_button = Pin(40, Pin.IN, Pin.PULL_UP)
-    # Setup Sunset Toggle Switch (Pin 39, Pull Up)
-    sunset_switch = Pin(39, Pin.IN, Pin.PULL_UP)
-
+    # Setup Sunset Toggle Switch (from other ESP32)
+    sunset_switch = True
     # Check if we have WiFi profiles
     if not wifimgr.has_profiles():
         print("No WiFi profiles found. Starting AP mode...")
@@ -161,7 +160,7 @@ def main():
                 else:
                     print("WiFi retry failed.")
                 last_wifi_retry_time = time_logic.time.time()
-
+        
         # Get the current time with the timezone offset for display
         t = time_logic.localtime_with_optional_dst(utc_offset, enable_dst=True)
         current_minutes = time_logic.get_current_minutes_past_midnight(utc_offset, enable_dst=True)
@@ -178,11 +177,11 @@ def main():
             uart2.write("0\n")
             action_flags['0800'] = True
 
-        if sunset_minutes is not None and not action_flags['five_min_before_sunset'] and current_minutes == five_min_before_sunset and sunset_switch.value():
+        if sunset_minutes is not None and not action_flags['five_min_before_sunset'] and current_minutes == five_min_before_sunset and sunset_switch:
             uart2.write("2\n")
             action_flags['five_min_before_sunset'] = True
 
-        if sunset_minutes is not None and not action_flags['sunset'] and current_minutes == sunset_minutes and sunset_switch.value():
+        if sunset_minutes is not None and not action_flags['sunset'] and current_minutes == sunset_minutes and sunset_switch:
             uart2.write("3\n")
             action_flags['sunset'] = True
         
@@ -240,7 +239,9 @@ def main():
                         oled.text(received_data.decode().strip(), 0, 20)
                         oled.show()
                         displayTimer = time_logic.time.ticks_ms()
-
+                    if received_data.decode().strip() == "Auto_Sunset_Toggle":
+                        sunset_switch = not sunset_switch
+                        print("Sunset switch state:", sunset_switch)
             except Exception as e:
                 print(f"Error reading UART data: {e}")
         if displayTimer > 0 and (time_logic.time.ticks_ms() - displayTimer) >= 5000:
