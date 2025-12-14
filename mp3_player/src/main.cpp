@@ -44,7 +44,7 @@
 #define BUTTON_PIN_3  23 
 #define BUTTON_PIN_4  13
 #define BUTTON_PIN_5  33
-#define BUTTON_PIN_6  35
+#define BUTTON_PIN_6  36
 
 #define LONG_PRESS_MS 1000
 #define DEBOUNCE_MS    50
@@ -218,19 +218,24 @@ void loop()
           if (btn.stableState == LOW) {
             // Button pressed
             btn.pressStart = millis();
+            if (btn.pin == BUTTON_PIN_6) {
+                Serial.println("Button 6 Switch ON -> Toggle");
+                Serial2.println("Auto_Sunset_OFF");
+            }
           } else {
             // Button released
             unsigned long held = millis() - btn.pressStart;
-              if (held >= LONG_PRESS_MS || btn.pin == BUTTON_PIN_5) {
+            
+             if (btn.pin == BUTTON_PIN_6) {
+                Serial.println("Button 6 Switch OFF -> Toggle");
+                Serial2.println("Auto_Sunset_ON");
+             } else if (btn.pin == BUTTON_PIN_5) {
                 // Long press: stop any currently playing audio
-                Serial.println("Long press or cancel detected. Stopping audio.");
+                Serial.println("Stop button detected. Stopping audio.");
                 Serial2.println("Press_Stop");
                 audio.stopSong();
                 isPlayingASequence = false; // Ensure sequence mode is off
                 currentActiveSequence = nullptr; // Clear sequence state
-              } else if btn.pin == BUTTON_PIN_6 {
-                Serial.println("Button 6 pressed, toggle auto sunset");
-                Serial2.println("Auto_Sunset_Toggle");
               } else {
                 //Short press: play its associated MP3 or start its sequence
                 startAudioPlayback(btn);

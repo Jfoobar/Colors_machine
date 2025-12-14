@@ -239,8 +239,11 @@ def main():
                         oled.text(received_data.decode().strip(), 0, 20)
                         oled.show()
                         displayTimer = time_logic.time.ticks_ms()
-                    if received_data.decode().strip() == "Auto_Sunset_Toggle":
-                        sunset_switch = not sunset_switch
+                    if received_data.decode().strip() == "Auto_Sunset_ON":
+                        sunset_switch = True
+                        print("Sunset switch state:", sunset_switch)
+                    if received_data.decode().strip() == "Auto_Sunset_OFF":
+                        sunset_switch = False
                         print("Sunset switch state:", sunset_switch)
             except Exception as e:
                 print(f"Error reading UART data: {e}")
