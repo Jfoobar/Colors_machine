@@ -44,7 +44,7 @@
 #define BUTTON_PIN_3  23 
 #define BUTTON_PIN_4  13
 #define BUTTON_PIN_5  33
-#define BUTTON_PIN_6  36
+#define BUTTON_PIN_6  27
 
 #define LONG_PRESS_MS 1000
 #define DEBOUNCE_MS    50
@@ -83,18 +83,17 @@ struct Button {
   unsigned long lastDebounceTime;
   bool lastRawState;
   bool stableState;
-  unsigned long pressStart;
 };
 
 // Array of buttons
 Button buttons[] = {
-  {BUTTON_PIN_1, nullptr, sequence_btn1, SEQUENCE_BTN1_LEN, true, 0, HIGH, HIGH, 0}, // Button 1 starts sequence 1
-  {BUTTON_PIN_2, "/taps.mp3", nullptr, 0, false, 0, HIGH, HIGH, 0},       // Button 2 plays taps directly
-  {BUTTON_PIN_3, "/first_call.mp3", nullptr, 0, false, 0, HIGH, HIGH, 0}, // Button 3 plays first_call directly
-  {BUTTON_PIN_4, nullptr, sequence_btn4, SEQUENCE_BTN4_LEN, true, 0, HIGH, HIGH, 0},  // Button 4 starts sequence 2
+  {BUTTON_PIN_1, nullptr, sequence_btn1, SEQUENCE_BTN1_LEN, true, 0, HIGH, HIGH}, // Button 1 starts sequence 1
+  {BUTTON_PIN_2, "/taps.mp3", nullptr, 0, false, 0, HIGH, HIGH},       // Button 2 plays taps directly
+  {BUTTON_PIN_3, "/first_call.mp3", nullptr, 0, false, 0, HIGH, HIGH}, // Button 3 plays first_call directly
+  {BUTTON_PIN_4, nullptr, sequence_btn4, SEQUENCE_BTN4_LEN, true, 0, HIGH, HIGH},  // Button 4 starts sequence 2
   //Button 5 stops playback on any press
-  {BUTTON_PIN_5, nullptr, nullptr, 0, false, 0, HIGH, HIGH, 0},
-  {BUTTON_PIN_6, nullptr, nullptr, 0, false, 0, HIGH, HIGH, 0}
+  {BUTTON_PIN_5, nullptr, nullptr, 0, false, 0, HIGH, HIGH},
+  {BUTTON_PIN_6, nullptr, nullptr, 0, false, 0, HIGH, HIGH}
 };
 const int NUM_BUTTONS = sizeof(buttons) / sizeof(buttons[0]);
 
@@ -179,9 +178,9 @@ void setup() {
     // Set Volume
     audio.setVolume(5);
     
-    // Setup button with internal pull-up
+    // Setup buttons
     pinMode(BUTTON_PIN_1, INPUT_PULLUP);
-    pinMode(BUTTON_PIN_2, INPUT_PULLUP); // Initialize new button pins
+    pinMode(BUTTON_PIN_2, INPUT_PULLUP); 
     pinMode(BUTTON_PIN_3, INPUT_PULLUP);
     pinMode(BUTTON_PIN_4, INPUT_PULLUP);
     pinMode(BUTTON_PIN_5, INPUT_PULLUP);
@@ -217,18 +216,16 @@ void loop()
           btn.stableState = raw;
           if (btn.stableState == LOW) {
             // Button pressed
-            btn.pressStart = millis();
             if (btn.pin == BUTTON_PIN_6) {
                 Serial.println("Button 6 Switch ON -> Toggle");
-                Serial2.println("Auto_Sunset_OFF");
+                Serial2.println("Auto_Sunset_ON");
             }
           } else {
             // Button released
-            unsigned long held = millis() - btn.pressStart;
             
              if (btn.pin == BUTTON_PIN_6) {
                 Serial.println("Button 6 Switch OFF -> Toggle");
-                Serial2.println("Auto_Sunset_ON");
+                Serial2.println("Auto_Sunset_OFF");
              } else if (btn.pin == BUTTON_PIN_5) {
                 // Long press: stop any currently playing audio
                 Serial.println("Stop button detected. Stopping audio.");
