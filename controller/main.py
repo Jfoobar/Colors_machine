@@ -42,7 +42,7 @@ def main():
     # Setup Manual AP Button (Pin 40, Pull Up)
     ap_button = Pin(40, Pin.IN, Pin.PULL_UP)
     # Setup Sunset Toggle Switch (from other ESP32)
-    sunset_switch = True
+    sunset_switch = False
     # Check if we have WiFi profiles
     if not wifimgr.has_profiles():
         print("No WiFi profiles found. Starting AP mode...")
