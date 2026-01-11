@@ -85,6 +85,11 @@ def main():
     last_wifi_retry_time = time_logic.time.time()
     wifi_retry_interval = 1800 # 30 minutes
     
+    first_call_morning_t = 7 * 60 + 55
+    mornning_colors_t = 8 * 60
+    taps_t = 22 * 60
+    
+
     start_date_tuple = sunset.START_DATE_TUPLE
     day_num_today = sunset.get_day_number(start_date_tuple)
     sunset_minutes = sunset.get_sunset_minutes(day_num_today)
@@ -169,11 +174,11 @@ def main():
             new_msg = f"Sunset: {display_sunset_hrs:02}:{display_sunset_mins:02}"
             config.set_system_msg(new_msg)
             # --- Time-based action logic ---
-        if not action_flags['0755'] and current_minutes == 7 * 60 + 55:
+        if not action_flags['0755'] and current_minutes == first_call_morning_t:
             uart2.write("2\n")
             action_flags['0755'] = True
 
-        if not action_flags['0800'] and current_minutes == 8 * 60:
+        if not action_flags['0800'] and current_minutes == mornning_colors_t:
             uart2.write("0\n")
             action_flags['0800'] = True
 
@@ -185,7 +190,7 @@ def main():
             uart2.write("3\n")
             action_flags['sunset'] = True
         
-        if not action_flags['2200'] and current_minutes == 22 * 60:
+        if not action_flags['2200'] and current_minutes == taps_t:
             uart2.write("1\n")
             action_flags['2200'] = True
             
